@@ -4,8 +4,8 @@ Ce document est la source de vérité unique (Single Source of Truth) pour l'arc
 
 ## 1. Stack Technique Globale
 - **Architecture** : Monorepo (npm workspaces)
-- **Frontend** : React SPA, Vite, TypeScript, Zustand (State), Axios (API), TailwindCSS (Style)
-- **Backend** : NestJS, TypeScript, REST API
+- **Frontend** : React SPA, Vite, TypeScript, Zustand (State), Axios (API), React Router, TailwindCSS (Style)
+- **Backend** : NestJS, TypeScript, REST API, JWT & bcrypt (Auth)
 - **Base de Données** : PostgreSQL (avec Prisma ORM)
 - **Stockage Fichiers** : AWS S3 (via Presigned URLs)
 - **Validation** : Zod (Isomorphe via le dossier `/shared`)
