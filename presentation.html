@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Présentation Architecture DataShare</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.min.css">
+  
+  <style>
+    .reveal { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .reveal h1 { font-size: 2.2em; text-transform: none; font-weight: 600; color: #42b883; margin-bottom: 10px; }
+    .reveal h2 { font-size: 1.4em; text-transform: none; font-weight: 600; color: #42b883; margin-bottom: 15px; }
+    .reveal h3 { font-size: 1.1em; text-transform: none; font-weight: 600; color: #42b883; }
+    .reveal p, .reveal li { font-size: 0.6em; line-height: 1.4; color: #e2e8f0; }
+    
+    .highlight { color: #f39c12; font-weight: bold; }
+    
+    .stack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+    .stack-card { 
+      background: rgba(255, 255, 255, 0.05); 
+      border: 1px solid rgba(255, 255, 255, 0.1); 
+      border-radius: 12px; 
+      padding: 15px; 
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .stack-card h3 { font-size: 1em; margin-bottom: 10px; color: #fff; }
+    .stack-card p { font-size: 0.6em; margin: 0; color: #cbd5e1; }
+
+    .argument-list { list-style: none; padding: 0; margin-top: 15px;}
+    .argument-list li { margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 10px 15px; border-left: 5px solid #42b883; border-radius: 4px; text-align: left; }
+    
+    .bad-list li { border-left-color: #e74c3c; }
+
+    .mermaid-slide { display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.9); padding: 20px; border-radius: 8px; width: 100%; box-sizing: border-box;}
+    
+    .api-table { width: 100%; border-collapse: collapse; text-align: left; color: #e2e8f0; font-size: 0.55em; }
+    .api-table th, .api-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .api-table th { color: #42b883; text-transform: uppercase; font-size: 0.9em; letter-spacing: 1px; border-bottom: 2px solid #42b883; }
+    .api-table code { background: rgba(0,0,0,0.3); padding: 3px 6px; border-radius: 4px; font-family: monospace; color: #a78bfa;}
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      
+      <!-- Slide 1 : Titre -->
+      <section data-background-gradient="linear-gradient(to bottom right, #111827, #1f2937)">
+        <h1 style="font-size: 3em; margin-bottom: 20px;">DataShare</h1>
+        <h3 style="color: #94a3b8;">Soutenance d'Architecture Technique</h3>
+        <p style="margin-top: 50px;"><small>Conception, Choix Technologiques & Paradigmes</small></p>
+      </section>
+
+      <!-- Slide 2 : La Stack Choisie -->
+      <section data-background-gradient="linear-gradient(to bottom right, #111827, #1e293b)">
+        <h2>La "Golden Stack"</h2>
+        <div class="stack-grid">
+            <div class="stack-card">
+                <h3>🟢 Backend</h3>
+                <p><strong>NestJS (TypeScript)</strong><br>Isomorphisme, architecture stricte, écosystème Cloud.</p>
+            </div>
+            <div class="stack-card">
+                <h3>⚛️ Frontend</h3>
+                <p><strong>React (TSX)</strong><br>Léger, granulaire, Virtual DOM ultra réactif.</p>
+            </div>
+            <div class="stack-card">
+                <h3>🐘 Base de Données</h3>
+                <p><strong>PostgreSQL</strong><br>Relationnel, intégrité référentielle absolue.</p>
+            </div>
+            <div class="stack-card">
+                <h3>☁️ Stockage</h3>
+                <p><strong>AWS S3</strong><br>Bande passante infinie, Presigned URLs, auto-purge.</p>
+            </div>
+        </div>
+      </section>
+
+      <!-- Slide 3 : Pourquoi ce choix (1/2) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Justification des Choix (1/2)</h2>
+        <ul class="argument-list">
+            <li>
+                <span class="highlight">🔄 Cohérence & Isomorphisme (Monorepo)</span><br>
+                Puisque l'upload lourd est délégué à AWS, le choix de NestJS s'impose pour la <strong>maintenabilité</strong>. Utiliser TypeScript partout permet de partager un dossier <code>/shared</code>. Les schémas de validation sécurisent le Front ET le Back sans aucune duplication de code.
+            </li>
+            <li>
+                <span class="highlight">🚀 Productivité & Écosystème Cloud</span><br>
+                En tant que développeur unique, coder en TypeScript de bout en bout supprime la fatigue cognitive du "Context Switching" (changer de langage). De plus, le SDK AWS officiel s'intègre parfaitement à l'écosystème Node.js pour interagir avec S3.
+            </li>
+        </ul>
+      </section>
+
+      <!-- Slide 4 : Pourquoi ce choix (2/2) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Justification des Choix (2/2)</h2>
+        <ul class="argument-list">
+            <li>
+                <span class="highlight">☁️ Délégation S3 (Bande Passante)</span><br>
+                Architecture "Direct-to-S3" via Presigned URLs. Le fichier transite du navigateur <strong>directement</strong> vers Amazon. Cela protège la carte réseau du serveur (le vrai goulot d'étranglement) et garantit une scalabilité horizontale infinie.
+            </li>
+            <li>
+                <span class="highlight">🏗️ Architecture d'Entreprise</span><br>
+                NestJS impose une Inversion de Contrôle et une structure en Services/Controllers, calquées sur Spring Boot, garantissant un code très fortement testable pour valider le document <code>TESTING.md</code>.
+            </li>
+        </ul>
+      </section>
+
+      <!-- Slide 5 : Schéma Séquence Upload -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Flux d'Upload (Direct-to-S3)</h2>
+        <div class="mermaid-slide" style="margin-top: -30px;">
+            <div class="mermaid" style="width: 100%; transform: scale(0.65); transform-origin: top center;">
+                sequenceDiagram
+                    autonumber
+                    box rgb(240, 248, 255) "Couche Client"
+                        actor User as 👤 Utilisateur
+                        participant Front as 💻 React SPA
+                    end
+                    box rgb(255, 249, 196) "Couche Serveur"
+                        participant API as ⚙️ API NestJS
+                        participant DB as 🐘 PostgreSQL
+                    end
+                    box rgb(255, 243, 224) "Couche Cloud"
+                        participant S3 as ☁️ AWS S3
+                    end
+
+                    Note over User, S3: 📝 Étape 1 : Déclaration et Sécurisation
+                    User->>Front: Sélectionne fichier (ex: 1 Go)
+                    Front->>API: POST /api/upload/init (nom, JWT)
+                    
+                    API->>API: Vérifie Auth & Taille
+                    API->>DB: Enregistre métadonnées (Statut: pending)
+                    
+                    Note right of API: 🔐 Opération Locale (Pas de réseau)
+                    API->>API: Signe la "Presigned URL" avec clé AWS
+                    
+                    API-->>Front: Retourne { fileId, presignedUrl }
+
+                    Note over User, S3: 🚀 Étape 2 : Transfert Direct Binaire
+                    Front->>S3: PUT HTTP sur la Presigned URL
+                    
+                    Note right of Front: 🛡️ Le serveur NestJS est contourné !
+                    
+                    S3-->>Front: 200 OK (Upload S3 terminé)
+
+                    Note over User, S3: ✅ Étape 3 : Finalisation
+                    Front->>API: PATCH /api/upload/complete (fileId)
+                    API->>DB: Met à jour statut (Statut: ready)
+                    API-->>Front: Succès
+            </div>
+        </div>
+      </section>
+
+      <!-- Slide 6 : Schéma Séquence Auth -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Flux d'Authentification (JWT)</h2>
+        <div class="mermaid-slide" style="margin-top: -30px;">
+            <div class="mermaid" style="width: 100%; transform: scale(0.65); transform-origin: top center;">
+                sequenceDiagram
+                    autonumber
+                    box rgb(240, 248, 255) "Couche Client"
+                        actor User as 👤 Utilisateur
+                        participant Front as 💻 React SPA
+                    end
+                    box rgb(255, 249, 196) "Couche Serveur"
+                        participant Auth as 🔐 API Auth
+                        participant DB as 🐘 PostgreSQL
+                    end
+
+                    Note over User, DB: 🔑 Scénario : Connexion (Login)
+                    User->>Front: Saisit Email + Mot de passe
+                    Front->>Auth: POST /api/auth/login
+                    
+                    Auth->>DB: Cherche Utilisateur par email
+                    DB-->>Auth: Retourne Utilisateur (Hash bcrypt)
+                    
+                    Auth->>Auth: Compare MDP saisi vs Hash (bcrypt)
+                    
+                    alt Mot de passe incorrect
+                        Auth-->>Front: 401 Unauthorized
+                        Front-->>User: "Identifiants invalides"
+                    else Mot de passe correct
+                        Note right of Auth: Payload: { sub: userId, role: user }
+                        Auth->>Auth: Génère et signe Access Token (JWT)
+                        Auth-->>Front: 200 OK + { token }
+                        
+                        Front->>Front: Stocke JWT (Local)
+                        Front-->>User: Redirige vers Dashboard
+                    end
+
+                    Note over User, DB: 🛡️ Utilisation du Token
+                    Front->>Auth: Requête API (Header: Bearer {token})
+                    Auth->>Auth: Valide la signature locale du Token
+                    Auth-->>Front: 200 OK (Accès Autorisé)
+            </div>
+        </div>
+      </section>
+
+      <!-- Slide 7 : Schéma Composants -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Vue Globale des Composants</h2>
+        <div class="mermaid-slide">
+            <div class="mermaid" style="width: 100%;">
+                flowchart LR
+                    classDef component fill:#e8eaf6,stroke:#9fa8da,stroke-width:1px,color:#333
+                    classDef s3 fill:#fff3e0,stroke:#ffb74d,stroke-width:2px,color:#333
+
+                    subgraph Couche_Presentation ["Couche Présentation (React)"]
+                        direction TB
+                        View["«view»<br>Composants React"]:::component
+                        Store["«store»<br>State Management"]:::component
+                        ApiClient["«service»<br>API Client"]:::component
+                        S3Client["«service»<br>S3 Uploader"]:::component
+
+                        View -->|"Action"| Store
+                        Store -->|"Appel API"| ApiClient
+                        Store -->|"Upload"| S3Client
+                    end
+
+                    subgraph Couche_Metier ["Couche Métier (NestJS)"]
+                        direction TB
+                        Controller["«controller»<br>Routes & Auth"]:::component
+                        Validation["«validation»<br>Zod (/shared)"]:::component
+                        Service["«service»<br>Logique Métier"]:::component
+                        Model["«model»<br>ORM (Prisma)"]:::component
+
+                        Controller -->|"Valide"| Validation
+                        Controller -->|"Appelle"| Service
+                        Service -->|"CRUD"| Model
+                    end
+
+                    subgraph Couche_Infra ["Infrastructure (DB & S3)"]
+                        direction TB
+                        DB[("«database»<br>PostgreSQL")]:::component
+                        S3[("«cloud»<br>AWS S3 Bucket")]:::s3
+                        Cron(["«cron»<br>Lifecycle Rule"]):::component
+
+                        S3 -.->|"Purge 7j (US10)"| Cron
+                    end
+
+                    %% Connexions LR (De gauche à droite)
+                    ApiClient -->|"Requêtes (Init, Delete...)"| Controller
+                    Model -->|"Requêtes SQL"| DB
+                    Service -.->|"AWS SDK (Suppression US06)"| S3
+                    S3Client == "🚀 PUT HTTP (Upload Direct)" ==> S3
+
+                    style Couche_Presentation fill:#fbfbfb,stroke:#ccc,stroke-width:2px,stroke-dasharray: 5 5
+                    style Couche_Metier fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+                    style Couche_Infra fill:#e0f7fa,stroke:#00bcd4,stroke-width:2px
+            </div>
+        </div>
+      </section>
+
+      <!-- Slide 8 : Schéma Base de Données (MCD) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Modèle de Données (PostgreSQL)</h2>
+        <div class="mermaid-slide" style="margin-top: -20px;">
+            <div class="mermaid" style="width: 100%; transform: scale(0.85); transform-origin: top center;">
+                erDiagram
+                    USERS ||--o{ FILES : "uploads"
+                    FILES ||--o{ FILE_TAGS : "possède"
+                    TAGS ||--o{ FILE_TAGS : "catégorise"
+
+                    USERS {
+                        uuid id PK
+                        string email UK
+                        string password_hash "bcrypt"
+                        timestamp created_at
+                    }
+
+                    FILES {
+                        uuid id PK
+                        uuid user_id FK "Nullable (US07 Anonyme)"
+                        string original_name
+                        string mime_type "Type MIME (US02)"
+                        string s3_key "ID AWS S3"
+                        int size_bytes
+                        string status "pending | ready"
+                        string password_hash "Optionnel (US09)"
+                        timestamp created_at
+                        timestamp expires_at "1 à 7j (US10)"
+                    }
+
+                    TAGS {
+                        uuid id PK
+                        string name UK
+                    }
+
+                    FILE_TAGS {
+                        uuid file_id FK
+                        uuid tag_id FK
+                    }
+            </div>
+        </div>
+      </section>
+
+      <!-- Slide 9 : Contrat d'Interface (API REST) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Contrat d'Interface (API REST)</h2>
+        <div style="width: 100%; display: flex; justify-content: center; margin-top: 30px;">
+          <table class="api-table">
+            <thead>
+              <tr>
+                <th>Méthode</th>
+                <th>Route (Endpoint)</th>
+                <th>Auth</th>
+                <th>Payload (Body)</th>
+                <th>Réponse (Success)</th>
+                <th>US</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span style="color: #f39c12; font-weight:bold;">POST</span></td>
+                <td><code>/api/auth/register</code></td>
+                <td>❌</td>
+                <td><code>{ email, password }</code></td>
+                <td><code>201 Created</code></td>
+                <td>US03</td>
+              </tr>
+              <tr>
+                <td><span style="color: #f39c12; font-weight:bold;">POST</span></td>
+                <td><code>/api/auth/login</code></td>
+                <td>❌</td>
+                <td><code>{ email, password }</code></td>
+                <td><code>{ access_token }</code></td>
+                <td>US04</td>
+              </tr>
+              <tr style="background: rgba(66, 184, 131, 0.1);">
+                <td><span style="color: #f39c12; font-weight:bold;">POST</span></td>
+                <td><code>/api/upload/init</code></td>
+                <td>Optionnel</td>
+                <td><code>{ name, type, size, tags[], pwd?, days? }</code></td>
+                <td><code>{ fileId, presignedUrl }</code></td>
+                <td>US01,07-10</td>
+              </tr>
+              <tr style="background: rgba(66, 184, 131, 0.1);">
+                <td><span style="color: #3498db; font-weight:bold;">PATCH</span></td>
+                <td><code>/api/upload/complete/:id</code></td>
+                <td>Optionnel</td>
+                <td><i>-</i></td>
+                <td><code>200 OK</code></td>
+                <td>US01, 07</td>
+              </tr>
+              <tr>
+                <td><span style="color: #2ecc71; font-weight:bold;">GET</span></td>
+                <td><code>/api/files</code></td>
+                <td>✅ JWT</td>
+                <td><i>-</i></td>
+                <td><code>[{ id, name, size, expires_at... }]</code></td>
+                <td>US05</td>
+              </tr>
+              <tr>
+                <td><span style="color: #e74c3c; font-weight:bold;">DELETE</span></td>
+                <td><code>/api/files/:id</code></td>
+                <td>✅ JWT</td>
+                <td><i>-</i></td>
+                <td><code>204 No Content</code></td>
+                <td>US06</td>
+              </tr>
+              <tr>
+                <td style="border-bottom: none;"><span style="color: #f39c12; font-weight:bold;">POST</span></td>
+                <td style="border-bottom: none;"><code>/api/files/:id/download</code></td>
+                <td style="border-bottom: none;">❌</td>
+                <td style="border-bottom: none;"><code>{ password? }</code></td>
+                <td style="border-bottom: none;"><code>{ downloadUrl }</code> (Presigned GET)</td>
+                <td style="border-bottom: none;">US02, 09</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="text-align: left; margin-top: 30px; font-size: 0.5em; color: #94a3b8; border-left: 4px solid #42b883; padding-left: 15px;">
+            <strong>Isomorphisme :</strong> Tous ces payloads (DTOs) seront strictement typés et validés par <strong style="color: #fff;">Zod</strong> dans un dossier partagé <code>/shared</code>. React et NestJS utiliseront les mêmes schémas.
+        </p>
+      </section>
+
+      <!-- Slide 10 : Alternatives écartées -->
+      <section data-background-gradient="linear-gradient(to bottom right, #3f191b, #1a0b0d)">
+        <h2>Alternatives Écartées (1/2)</h2>
+        <ul class="argument-list bad-list">
+            <li>
+                <span class="highlight">Java (Spring) / C# (.NET)</span><br>
+                Rois du calcul processeur lourd. Cependant, l'asynchrone est l'ADN par défaut de Node.js, là où il nécessite des modules spécifiques sous Java. Puisque notre architecture S3 délègue l'I/O lourd, l'avantage de l'Isomorphisme (TypeScript) de NestJS a primé.
+            </li>
+            <li>
+                <span class="highlight">PHP (Laravel)</span><br>
+                Son architecture "Share-Nothing" est très résiliente, mais bloque le thread. L'argument majeur contre PHP ici est la perte de l'Isomorphisme Front/Back (impossibilité absolue de partager le code de validation).
+            </li>
+        </ul>
+      </section>
+
+      <!-- Slide 8 : Alternatives (2/2) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #3f191b, #1a0b0d)">
+        <h2>Alternatives Écartées (2/2)</h2>
+        <ul class="argument-list bad-list">
+            <li>
+                <span class="highlight">Angular</span><br>
+                Surdimensionné. Les <em>Reactive Forms</em> sont excellents, mais le framework pèse trop lourd, pénalisant directement notre budget de performance réseau sur une application de seulement 3 ou 4 vues.
+            </li>
+            <li>
+                <span class="highlight">Stockage Serveur Local (L'Option B)</span><br>
+                Créerait un backend "Stateful" saturant notre bande passante et empêchant le Load Balancing. Amazon S3 supprime aussi la dette technique liée au développement d'une tâche CRON de purge (US10).
+            </li>
+        </ul>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+  <script type="module">
+    // On importe Mermaid depuis le CDN pour interpréter les graphiques dans les slides
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    
+    Reveal.initialize({
+        hash: true,
+        slideNumber: 'c/t',
+        transition: 'fade',
+        controls: true,
+        progress: true,
+        center: true
+    });
+  </script>
+</body>
+</html>
