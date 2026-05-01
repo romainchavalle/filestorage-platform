@@ -76,128 +76,38 @@
         </div>
       </section>
 
-      <!-- Slide 3 : Pourquoi ce choix (1/2) -->
-      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
-        <h2>Justification des Choix (1/2)</h2>
-        <ul class="argument-list">
-            <li>
-                <span class="highlight">🔄 Cohérence & Isomorphisme (Monorepo)</span><br>
-                Puisque l'upload lourd est délégué à AWS, le choix de NestJS s'impose pour la <strong>maintenabilité</strong>. Utiliser TypeScript partout permet de partager un dossier <code>/shared</code>. Les schémas de validation sécurisent le Front ET le Back sans aucune duplication de code.
-            </li>
-            <li>
-                <span class="highlight">🚀 Productivité & Écosystème Cloud</span><br>
-                En tant que développeur unique, coder en TypeScript de bout en bout supprime la fatigue cognitive du "Context Switching" (changer de langage). De plus, le SDK AWS officiel s'intègre parfaitement à l'écosystème Node.js pour interagir avec S3.
-            </li>
-        </ul>
-      </section>
-
-      <!-- Slide 4 : Pourquoi ce choix (2/2) -->
-      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
-        <h2>Justification des Choix (2/2)</h2>
-        <ul class="argument-list">
-            <li>
-                <span class="highlight">☁️ Délégation S3 (Bande Passante)</span><br>
-                Architecture "Direct-to-S3" via Presigned URLs. Le fichier transite du navigateur <strong>directement</strong> vers Amazon. Cela protège la carte réseau du serveur (le vrai goulot d'étranglement) et garantit une scalabilité horizontale infinie.
-            </li>
-            <li>
-                <span class="highlight">🏗️ Architecture d'Entreprise</span><br>
-                NestJS impose une Inversion de Contrôle et une structure en Services/Controllers, calquées sur Spring Boot, garantissant un code très fortement testable pour valider le document <code>TESTING.md</code>.
-            </li>
-        </ul>
-      </section>
-
-      <!-- Slide 5 : Schéma Séquence Upload -->
-      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
-        <h2>Flux d'Upload (Direct-to-S3)</h2>
-        <div class="mermaid-slide" style="margin-top: -30px;">
-            <div class="mermaid" style="width: 100%; transform: scale(0.65); transform-origin: top center;">
-                sequenceDiagram
-                    autonumber
-                    box rgb(240, 248, 255) "Couche Client"
-                        actor User as 👤 Utilisateur
-                        participant Front as 💻 React SPA
-                    end
-                    box rgb(255, 249, 196) "Couche Serveur"
-                        participant API as ⚙️ API NestJS
-                        participant DB as 🐘 PostgreSQL
-                    end
-                    box rgb(255, 243, 224) "Couche Cloud"
-                        participant S3 as ☁️ AWS S3
-                    end
-
-                    Note over User, S3: 📝 Étape 1 : Déclaration et Sécurisation
-                    User->>Front: Sélectionne fichier (ex: 1 Go)
-                    Front->>API: POST /api/upload/init (nom, JWT)
-                    
-                    API->>API: Vérifie Auth & Taille
-                    API->>DB: Enregistre métadonnées (Statut: pending)
-                    
-                    Note right of API: 🔐 Opération Locale (Pas de réseau)
-                    API->>API: Signe la "Presigned URL" avec clé AWS
-                    
-                    API-->>Front: Retourne { fileId, presignedUrl }
-
-                    Note over User, S3: 🚀 Étape 2 : Transfert Direct Binaire
-                    Front->>S3: PUT HTTP sur la Presigned URL
-                    
-                    Note right of Front: 🛡️ Le serveur NestJS est contourné !
-                    
-                    S3-->>Front: 200 OK (Upload S3 terminé)
-
-                    Note over User, S3: ✅ Étape 3 : Finalisation
-                    Front->>API: PATCH /api/upload/complete (fileId)
-                    API->>DB: Met à jour statut (Statut: ready)
-                    API-->>Front: Succès
+      <!-- Slide 3 : Écosystème & Bibliothèques -->
+      <section data-background-gradient="linear-gradient(to bottom right, #111827, #1e293b)">
+        <h2>Écosystème & Bibliothèques</h2>
+        <div class="stack-grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 15px;">
+            <div class="stack-card" style="border-left: 3px solid #a78bfa;">
+                <h3 style="font-size: 0.85em;">🛡️ Zod</h3>
+                <p style="font-size: 0.5em;">Validation isomorphe des données. Un seul schéma partagé (<code>/shared</code>) valide les formulaires React <strong>et</strong> les requêtes NestJS.</p>
+            </div>
+            <div class="stack-card" style="border-left: 3px solid #38bdf8;">
+                <h3 style="font-size: 0.85em;">🔷 Prisma</h3>
+                <p style="font-size: 0.5em;">ORM type-safe pour PostgreSQL. Génère automatiquement les types TypeScript depuis le schéma BDD. Migrations versionnées.</p>
+            </div>
+            <div class="stack-card" style="border-left: 3px solid #f59e0b;">
+                <h3 style="font-size: 0.85em;">📡 Axios</h3>
+                <p style="font-size: 0.5em;">Client HTTP avec intercepteurs. Gestion centralisée du token JWT (injection automatique dans chaque requête via un <em>interceptor</em>).</p>
+            </div>
+            <div class="stack-card" style="border-left: 3px solid #22c55e;">
+                <h3 style="font-size: 0.85em;">🐻 Zustand</h3>
+                <p style="font-size: 0.5em;">State management minimaliste (~1 Ko). Remplace Redux sans boilerplate. Idéal pour stocker l'état d'authentification et la liste de fichiers.</p>
+            </div>
+            <div class="stack-card" style="border-left: 3px solid #ef4444;">
+                <h3 style="font-size: 0.85em;">🔐 JWT & bcrypt</h3>
+                <p style="font-size: 0.5em;">Authentification stateless (pas de session serveur). Mots de passe hachés avec bcrypt (salt rounds). Token signé côté serveur.</p>
+            </div>
+            <div class="stack-card" style="border-left: 3px solid #06b6d4;">
+                <h3 style="font-size: 0.85em;">🎨 Tailwind CSS v4</h3>
+                <p style="font-size: 0.5em;">Framework CSS utility-first. Nouveau moteur Oxide ultra-rapide. Zéro fichier de configuration nécessaire en v4.</p>
             </div>
         </div>
       </section>
 
-      <!-- Slide 6 : Schéma Séquence Auth -->
-      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
-        <h2>Flux d'Authentification (JWT)</h2>
-        <div class="mermaid-slide" style="margin-top: -30px;">
-            <div class="mermaid" style="width: 100%; transform: scale(0.65); transform-origin: top center;">
-                sequenceDiagram
-                    autonumber
-                    box rgb(240, 248, 255) "Couche Client"
-                        actor User as 👤 Utilisateur
-                        participant Front as 💻 React SPA
-                    end
-                    box rgb(255, 249, 196) "Couche Serveur"
-                        participant Auth as 🔐 API Auth
-                        participant DB as 🐘 PostgreSQL
-                    end
-
-                    Note over User, DB: 🔑 Scénario : Connexion (Login)
-                    User->>Front: Saisit Email + Mot de passe
-                    Front->>Auth: POST /api/auth/login
-                    
-                    Auth->>DB: Cherche Utilisateur par email
-                    DB-->>Auth: Retourne Utilisateur (Hash bcrypt)
-                    
-                    Auth->>Auth: Compare MDP saisi vs Hash (bcrypt)
-                    
-                    alt Mot de passe incorrect
-                        Auth-->>Front: 401 Unauthorized
-                        Front-->>User: "Identifiants invalides"
-                    else Mot de passe correct
-                        Note right of Auth: Payload: { sub: userId, role: user }
-                        Auth->>Auth: Génère et signe Access Token (JWT)
-                        Auth-->>Front: 200 OK + { token }
-                        
-                        Front->>Front: Stocke JWT (Local)
-                        Front-->>User: Redirige vers Dashboard
-                    end
-
-                    Note over User, DB: 🛡️ Utilisation du Token
-                    Front->>Auth: Requête API (Header: Bearer {token})
-                    Auth->>Auth: Valide la signature locale du Token
-                    Auth-->>Front: 200 OK (Accès Autorisé)
-            </div>
-        </div>
-      </section>
-
-      <!-- Slide 7 : Schéma Composants -->
+      <!-- Slide 4 : Schéma Composants (Global Architecture) -->
       <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
         <h2>Vue Globale des Composants</h2>
         <div class="mermaid-slide">
@@ -250,6 +160,86 @@
                     style Couche_Infra fill:#e0f7fa,stroke:#00bcd4,stroke-width:2px
             </div>
         </div>
+      </section>
+
+      <!-- Slide 4 : Pourquoi ce choix (1/2) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Justification des Choix (1/2)</h2>
+        <ul class="argument-list">
+            <li>
+                <span class="highlight">🔄 Isomorphisme (NestJS)</span><br>
+                Le choix de NestJS s'impose pour la <strong>maintenabilité</strong>. Utiliser TypeScript partout permet de partager un dossier <code>/shared</code>. Les schémas de validation Zod sécurisent le Front ET le Back sans aucune duplication de code.
+            </li>
+            <li>
+                <span class="highlight">⚛️ Front-end Ciblé (React)</span><br>
+                React a été préféré à Angular car il est beaucoup <strong>moins lourd</strong> pour une Single Page Application de cette taille. Le Virtual DOM assure des performances optimales pour une interface DataShare qui restera simple. De plus, son vaste écosystème de composants permet un développement ultra-rapide.
+            </li>
+        </ul>
+      </section>
+
+      <!-- Slide 5 : Pourquoi ce choix (2/2) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Justification des Choix (2/2)</h2>
+        <ul class="argument-list">
+            <li>
+                <span class="highlight">☁️ Délégation S3 (Bande Passante)</span><br>
+                Architecture "Direct-to-S3" via Presigned URLs. Le fichier transite du navigateur <strong>directement</strong> vers Amazon. Cela protège la carte réseau du serveur (le vrai goulot d'étranglement) et garantit une scalabilité horizontale infinie.
+            </li>
+            <li>
+                <span class="highlight">🏗️ Architecture d'Entreprise</span><br>
+                NestJS impose une Inversion de Contrôle et une structure en Services/Controllers, calquées sur Spring Boot, garantissant un code très fortement testable pour valider le document <code>TESTING.md</code>.
+            </li>
+        </ul>
+      </section>
+
+      <!-- Slide 7 : Pourquoi ces bibliothèques (3/3) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Justification des Choix (3/3)</h2>
+        <p style="color: #94a3b8; margin-bottom: 10px; font-size: 0.55em;">Pourquoi ces bibliothèques et pas d'autres ?</p>
+        <ul class="argument-list">
+            <li>
+                <span class="highlight">🐻 Zustand plutôt que Redux</span><br>
+                Redux impose un <em>boilerplate</em> considérable (Actions, Reducers, Dispatch). Pour une application de 4 vues avec un seul état global (l'utilisateur connecté + ses fichiers), Zustand offre la même puissance en <strong>~10 lignes de code</strong> au lieu de 50.
+            </li>
+            <li>
+                <span class="highlight">🔷 Prisma plutôt que TypeORM</span><br>
+                TypeORM souffre de types approximatifs et de bugs non résolus en TypeScript strict. Prisma génère un client 100% type-safe depuis le schéma : <strong>toute erreur de requête est détectée à la compilation</strong>, pas en production. Les migrations sont versionnées et reproductibles.
+            </li>
+            <li>
+                <span class="highlight">🛡️ Zod + Axios : Le contrat blindé</span><br>
+                <code>fetch</code> natif ne fournit aucun typage de réponse. Axios combiné à Zod permet de <strong>valider en runtime</strong> que la donnée reçue du serveur correspond exactement au schéma attendu. Si l'API change, le front crashe immédiatement en développement, pas silencieusement en production.
+            </li>
+        </ul>
+      </section>
+
+      <!-- Slide 8 : Alternatives écartées -->
+      <section data-background-gradient="linear-gradient(to bottom right, #3f191b, #1a0b0d)">
+        <h2>Alternatives Écartées (1/2)</h2>
+        <ul class="argument-list bad-list">
+            <li>
+                <span class="highlight">Java (Spring) / C# (.NET)</span><br>
+                Rois du calcul processeur lourd. Cependant, l'asynchrone est l'ADN par défaut de Node.js, là où il nécessite des modules spécifiques sous Java. Puisque notre architecture S3 délègue l'I/O lourd, l'avantage de l'Isomorphisme (TypeScript) de NestJS a primé.
+            </li>
+            <li>
+                <span class="highlight">PHP (Laravel)</span><br>
+                Son architecture "Share-Nothing" est très résiliente, mais bloque le thread. L'argument majeur contre PHP ici est la perte de l'Isomorphisme Front/Back (impossibilité absolue de partager le code de validation).
+            </li>
+        </ul>
+      </section>
+
+      <!-- Slide 7 : Alternatives (2/2) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #3f191b, #1a0b0d)">
+        <h2>Alternatives Écartées (2/2)</h2>
+        <ul class="argument-list bad-list">
+            <li>
+                <span class="highlight">Angular</span><br>
+                Surdimensionné. Les <em>Reactive Forms</em> sont excellents, mais le framework pèse trop lourd, pénalisant directement notre budget de performance réseau sur une application de seulement 3 ou 4 vues.
+            </li>
+            <li>
+                <span class="highlight">Stockage Serveur Local (L'Option B)</span><br>
+                Créerait un backend "Stateful" saturant notre bande passante et empêchant le Load Balancing. Amazon S3 supprime aussi la dette technique liée au développement d'une tâche CRON de purge (US10).
+            </li>
+        </ul>
       </section>
 
       <!-- Slide 8 : Schéma Base de Données (MCD) -->
@@ -375,34 +365,154 @@
         </p>
       </section>
 
-      <!-- Slide 10 : Alternatives écartées -->
-      <section data-background-gradient="linear-gradient(to bottom right, #3f191b, #1a0b0d)">
-        <h2>Alternatives Écartées (1/2)</h2>
-        <ul class="argument-list bad-list">
-            <li>
-                <span class="highlight">Java (Spring) / C# (.NET)</span><br>
-                Rois du calcul processeur lourd. Cependant, l'asynchrone est l'ADN par défaut de Node.js, là où il nécessite des modules spécifiques sous Java. Puisque notre architecture S3 délègue l'I/O lourd, l'avantage de l'Isomorphisme (TypeScript) de NestJS a primé.
-            </li>
-            <li>
-                <span class="highlight">PHP (Laravel)</span><br>
-                Son architecture "Share-Nothing" est très résiliente, mais bloque le thread. L'argument majeur contre PHP ici est la perte de l'Isomorphisme Front/Back (impossibilité absolue de partager le code de validation).
-            </li>
-        </ul>
+      <!-- Slide 10 : Schéma Séquence Upload -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Flux d'Upload (Direct-to-S3)</h2>
+        <div class="mermaid-slide" style="margin-top: -30px;">
+            <div class="mermaid" style="width: 100%; transform: scale(0.65); transform-origin: top center;">
+                sequenceDiagram
+                    autonumber
+                    box rgb(240, 248, 255) "Couche Client"
+                        actor User as 👤 Utilisateur
+                        participant Front as 💻 React SPA
+                    end
+                    box rgb(255, 249, 196) "Couche Serveur"
+                        participant API as ⚙️ API NestJS
+                        participant DB as 🐘 PostgreSQL
+                    end
+                    box rgb(255, 243, 224) "Couche Cloud"
+                        participant S3 as ☁️ AWS S3
+                    end
+
+                    Note over User, S3: 📝 Étape 1 : Déclaration et Sécurisation
+                    User->>Front: Sélectionne fichier (ex: 1 Go)
+                    Front->>API: POST /api/upload/init (nom, JWT)
+                    
+                    API->>API: Vérifie Auth & Taille
+                    API->>DB: Enregistre métadonnées (Statut: pending)
+                    
+                    Note right of API: 🔐 Opération Locale (Pas de réseau)
+                    API->>API: Signe la "Presigned URL" avec clé AWS
+                    
+                    API-->>Front: Retourne { fileId, presignedUrl }
+
+                    Note over User, S3: 🚀 Étape 2 : Transfert Direct Binaire
+                    Front->>S3: PUT HTTP sur la Presigned URL
+                    
+                    Note right of Front: 🛡️ Le serveur NestJS est contourné !
+                    
+                    S3-->>Front: 200 OK (Upload S3 terminé)
+
+                    Note over User, S3: ✅ Étape 3 : Finalisation
+                    Front->>API: PATCH /api/upload/complete (fileId)
+                    API->>DB: Met à jour statut (Statut: ready)
+                    API-->>Front: Succès
+            </div>
+        </div>
       </section>
 
-      <!-- Slide 8 : Alternatives (2/2) -->
-      <section data-background-gradient="linear-gradient(to bottom right, #3f191b, #1a0b0d)">
-        <h2>Alternatives Écartées (2/2)</h2>
-        <ul class="argument-list bad-list">
-            <li>
-                <span class="highlight">Angular</span><br>
-                Surdimensionné. Les <em>Reactive Forms</em> sont excellents, mais le framework pèse trop lourd, pénalisant directement notre budget de performance réseau sur une application de seulement 3 ou 4 vues.
-            </li>
-            <li>
-                <span class="highlight">Stockage Serveur Local (L'Option B)</span><br>
-                Créerait un backend "Stateful" saturant notre bande passante et empêchant le Load Balancing. Amazon S3 supprime aussi la dette technique liée au développement d'une tâche CRON de purge (US10).
-            </li>
-        </ul>
+      <!-- Slide 11 : Schéma Séquence Auth -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2>Flux d'Authentification (JWT)</h2>
+        <div class="mermaid-slide" style="margin-top: -30px;">
+            <div class="mermaid" style="width: 100%; transform: scale(0.65); transform-origin: top center;">
+                sequenceDiagram
+                    autonumber
+                    box rgb(240, 248, 255) "Couche Client"
+                        actor User as 👤 Utilisateur
+                        participant Front as 💻 React SPA
+                    end
+                    box rgb(255, 249, 196) "Couche Serveur"
+                        participant Auth as 🔐 API Auth
+                        participant DB as 🐘 PostgreSQL
+                    end
+
+                    Note over User, DB: 🔑 Scénario : Connexion (Login)
+                    User->>Front: Saisit Email + Mot de passe
+                    Front->>Auth: POST /api/auth/login
+                    
+                    Auth->>DB: Cherche Utilisateur par email
+                    DB-->>Auth: Retourne Utilisateur (Hash bcrypt)
+                    
+                    Auth->>Auth: Compare MDP saisi vs Hash (bcrypt)
+                    
+                    alt Mot de passe incorrect
+                        Auth-->>Front: 401 Unauthorized
+                        Front-->>User: "Identifiants invalides"
+                    else Mot de passe correct
+                        Note right of Auth: Payload: { sub: userId, role: user }
+                        Auth->>Auth: Génère et signe Access Token (JWT)
+                        Auth-->>Front: 200 OK + { token }
+                        
+                        Front->>Front: Stocke JWT (Local)
+                        Front-->>User: Redirige vers Dashboard
+                    end
+
+                    Note over User, DB: 🛡️ Utilisation du Token
+                    Front->>Auth: Requête API (Header: Bearer {token})
+                    Auth->>Auth: Valide la signature locale du Token
+                    Auth-->>Front: 200 OK (Accès Autorisé)
+            </div>
+        </div>
+      </section>
+
+      <!-- Slide 12 : Architecture Backend (NestJS) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2 style="margin-bottom: 8px;">Arborescence Backend (NestJS)</h2>
+        <pre style="background: rgba(0,0,0,0.4); border: 1px solid rgba(66,184,131,0.3); border-radius: 8px; padding: 12px 18px; margin: 0 auto; text-align: left; font-size: 0.34em; line-height: 1.35; color: #e2e8f0; font-family: 'Consolas', 'Monaco', monospace; display: inline-block;"><code>backend/
+├── prisma/
+│   ├── <span style="color:#42b883">schema.prisma</span>            <span style="color:#94a3b8"># Modèles de données (User, File, Tag)</span>
+│   └── migrations/
+├── src/
+│   ├── main.ts                  <span style="color:#94a3b8"># Point d'entrée</span>
+│   ├── app.module.ts            <span style="color:#94a3b8"># Module racine</span>
+│   ├── <span style="color:#a78bfa">common/</span>                  <span style="color:#94a3b8"># 🔧 Guards, Pipes, Decorators, Filters</span>
+│   ├── <span style="color:#f39c12">prisma/</span>                  <span style="color:#94a3b8"># 🐘 PrismaService (accès BDD injectable)</span>
+│   ├── <span style="color:#f39c12">auth/</span>                    <span style="color:#94a3b8"># 🔐 module · controller · service · jwt.strategy</span>
+│   ├── <span style="color:#f39c12">upload/</span>                  <span style="color:#94a3b8"># 🚀 module · controller · service</span>
+│   ├── <span style="color:#f39c12">files/</span>                   <span style="color:#94a3b8"># 📁 module · controller · service</span>
+│   ├── <span style="color:#f39c12">tags/</span>                    <span style="color:#94a3b8"># 🏷️ module · controller · service</span>
+│   └── <span style="color:#38bdf8">s3/</span>                      <span style="color:#94a3b8"># ☁️ module · service (AWS SDK)</span></code></pre>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 12px;">
+          <div style="background: rgba(0,0,0,0.2); padding: 10px 12px; border-left: 4px solid #42b883; border-radius: 4px; text-align: left;">
+            <p style="font-size: 0.45em; margin: 0; color: #e2e8f0;"><span class="highlight">🧩 1 Module = 1 Domaine</span><br>Chaque module encapsule son <strong>Controller + Service</strong>. Architecture calquée sur Spring Boot.</p>
+          </div>
+          <div style="background: rgba(0,0,0,0.2); padding: 10px 12px; border-left: 4px solid #42b883; border-radius: 4px; text-align: left;">
+            <p style="font-size: 0.45em; margin: 0; color: #e2e8f0;"><span class="highlight">🔧 common/</span><br><strong>Guard</strong> (auth JWT), <strong>Pipe</strong> (validation Zod), <strong>Decorator</strong> (@CurrentUser), <strong>Filter</strong> (erreurs).</p>
+          </div>
+          <div style="background: rgba(0,0,0,0.2); padding: 10px 12px; border-left: 4px solid #42b883; border-radius: 4px; text-align: left;">
+            <p style="font-size: 0.45em; margin: 0; color: #e2e8f0;"><span class="highlight">🐘 Infrastructure injectée</span><br><strong>Prisma</strong> (BDD) et <strong>S3</strong> (cloud) injectés via IoC, jamais accédés directement.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slide 13 : Architecture Frontend (React) -->
+      <section data-background-gradient="linear-gradient(to bottom right, #0f172a, #1e293b)">
+        <h2 style="margin-bottom: 8px;">Arborescence Frontend (React)</h2>
+        <pre style="background: rgba(0,0,0,0.4); border: 1px solid rgba(66,184,131,0.3); border-radius: 8px; padding: 12px 18px; margin: 0 auto; text-align: left; font-size: 0.34em; line-height: 1.35; color: #e2e8f0; font-family: 'Consolas', 'Monaco', monospace; display: inline-block;"><code>frontend/src/
+├── App.tsx                        <span style="color:#94a3b8"># React Router + Layout</span>
+├── <span style="color:#38bdf8">api/</span>
+│   └── client.ts                  <span style="color:#94a3b8"># 📡 Instance Axios + Interceptor JWT</span>
+├── <span style="color:#f39c12">features/</span>                      <span style="color:#94a3b8"># 🧩 Domaines métier</span>
+│   ├── <span style="color:#42b883">auth/</span>                      <span style="color:#94a3b8"># 🔐 pages/ (Login, Register) · auth.api · useAuthStore</span>
+│   ├── <span style="color:#42b883">upload/</span>                    <span style="color:#94a3b8"># 🚀 pages/ (Upload) · hooks/ (useUpload) · upload.api</span>
+│   ├── <span style="color:#42b883">files/</span>                     <span style="color:#94a3b8"># 📁 pages/ (Dashboard, Download) · components/ · useFileStore</span>
+│   └── <span style="color:#42b883">home/</span>                      <span style="color:#94a3b8"># 🏠 pages/ (Home)</span>
+├── <span style="color:#a78bfa">components/</span>                    <span style="color:#94a3b8"># 🎨 UI partagés</span>
+│   ├── ui/                        <span style="color:#94a3b8"># Button, Input, Modal, Badge</span>
+│   └── layout/                    <span style="color:#94a3b8"># Navbar, Footer, ProtectedRoute</span>
+└── <span style="color:#a78bfa">utils/</span>                         <span style="color:#94a3b8"># 🔧 formatBytes, formatDate</span></code></pre>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 12px;">
+          <div style="background: rgba(0,0,0,0.2); padding: 10px 12px; border-left: 4px solid #42b883; border-radius: 4px; text-align: left;">
+            <p style="font-size: 0.45em; margin: 0; color: #e2e8f0;"><span class="highlight">📁 Feature-based</span><br>Chaque domaine regroupe <strong>pages, composants, store et API</strong>. Miroir du backend.</p>
+          </div>
+          <div style="background: rgba(0,0,0,0.2); padding: 10px 12px; border-left: 4px solid #42b883; border-radius: 4px; text-align: left;">
+            <p style="font-size: 0.45em; margin: 0; color: #e2e8f0;"><span class="highlight">🎨 UI transversaux</span><br>Composants réutilisables (Button, Modal, Navbar) partagés entre toutes les features.</p>
+          </div>
+          <div style="background: rgba(0,0,0,0.2); padding: 10px 12px; border-left: 4px solid #42b883; border-radius: 4px; text-align: left;">
+            <p style="font-size: 0.45em; margin: 0; color: #e2e8f0;"><span class="highlight">📡 Intercepteur centralisé</span><br>Un seul <code>client.ts</code> injecte le JWT et gère les 401 (logout auto).</p>
+          </div>
+        </div>
       </section>
 
     </div>
