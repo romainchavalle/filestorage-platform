@@ -1,9 +1,4 @@
-import { z } from 'zod';
-
-// Exemple de schéma partagé (à étendre)
-export const UserLoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
-export type UserLoginDto = z.infer<typeof UserLoginSchema>;
+// Point d'entrée unique — réexporte tous les schémas
+export * from './schemas/auth.schema';
+export * from './schemas/upload.schema';
+export * from './schemas/file.schema';
