@@ -1,15 +1,10 @@
 @import "tailwindcss";
 
-/* Base styles pour DataShare */
+/* ── Base globale ─────────────────────────────────────────── */
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #0f172a;
-
   font-synthesize: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -18,16 +13,18 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
 
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Fond gradient pêche/saumon (comme les maquettes) ──── */
+.bg-datashare {
+  background: linear-gradient(180deg, #f5a97a 0%, #e88d6d 50%, #d4826a 100%);
+  min-height: 100vh;
 }
