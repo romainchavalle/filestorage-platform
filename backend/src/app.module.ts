@@ -4,6 +4,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
+import { S3Module } from './s3/s3.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -11,6 +13,8 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     AuthModule,
+    S3Module,
+    UploadModule,
   ],
   providers: [
     {

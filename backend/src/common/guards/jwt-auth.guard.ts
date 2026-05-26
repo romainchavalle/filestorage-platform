@@ -1,4 +1,4 @@
-import { Injectable, ExecutionContext } from '@nestjs/common';
+import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
@@ -9,20 +9,24 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     super();
   }
 
-  // Appelé AVANT chaque route protégée
   canActivate(context: ExecutionContext) {
-    // Vérifie si la route a le décorateur @Public()
+    return super.canActivate(context);
+  }
+
+  handleRequest(err, user, info, context: ExecutionContext) {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
 
-    // Si @Public() → on laisse passer sans vérifier le token
-    if (isPublic) {
-      return true;
+    if (user) {
+      return user;
     }
 
-    // Sinon → on vérifie le token via la JwtStrategy
-    return super.canActivate(context);
+    if (isPublic) {
+      return null;
+    }
+
+    throw err || new UnauthorizedException();
   }
 }
