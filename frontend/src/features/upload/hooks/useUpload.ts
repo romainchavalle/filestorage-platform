@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { uploadApi } from './upload.api';
-import { UploadInitDto } from 'shared';
+import { UploadInitDto, UploadInitSchema } from 'shared';
+import { z } from 'zod';
 
 type UploadState = 'idle' | 'uploading' | 'success' | 'error';
 
@@ -16,17 +17,20 @@ export const useUpload = () => {
       setProgress(0);
       setError(null);
 
-      // 1. Demander l'URL pré-signée
-      const initData: UploadInitDto = {
+      // 1. Validation Frontend Isomorphique
+      const initData = {
         originalName: file.name,
         mimeType: file.type || 'application/octet-stream',
         sizeBytes: file.size,
-        password: options.password,
+        password: options.password || undefined,
         expiresInDays: options.expiresInDays,
         tags: options.tags,
       };
 
-      const { fileId: newFileId, presignedUrl } = await uploadApi.initUpload(initData);
+      const validatedData = UploadInitSchema.parse(initData);
+
+      // 2. Demander l'URL pré-signée
+      const { fileId: newFileId, presignedUrl } = await uploadApi.initUpload(validatedData);
       setFileId(newFileId);
 
       // 2. Envoyer le fichier binaire à AWS S3
@@ -44,9 +48,13 @@ export const useUpload = () => {
     } catch (err: any) {
       console.error('Upload failed:', err);
       setState('error');
-      // On récupère le message d'erreur s'il vient de Zod (API)
-      const errorMessage = err.response?.data?.message || err.message || 'Une erreur est survenue lors du téléversement.';
-      setError(errorMessage);
+      
+      if (err instanceof z.ZodError) {
+        setError(err.errors[0].message);
+      } else {
+        const errorMessage = err.response?.data?.message || err.message || 'Une erreur est survenue lors du téléversement.';
+        setError(errorMessage);
+      }
     }
   };
 
