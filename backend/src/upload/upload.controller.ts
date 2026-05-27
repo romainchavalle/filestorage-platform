@@ -4,7 +4,7 @@ import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { UploadInitSchema } from 'shared';
-import type { UploadInitDto } from 'shared';
+import type { UploadInitDto, UploadInitResponseDto } from 'shared';
 
 @Controller('upload')
 export class UploadController {
@@ -15,7 +15,7 @@ export class UploadController {
   async init(
     @Body(new ZodValidationPipe(UploadInitSchema)) dto: UploadInitDto,
     @CurrentUser() userId?: string,
-  ) {
+  ): Promise<UploadInitResponseDto> {
     return this.uploadService.initUpload(dto, userId);
   }
 

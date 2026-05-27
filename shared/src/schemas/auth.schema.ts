@@ -18,6 +18,20 @@ export const UserRegisterSchema = z
     path: ['confirmPassword'],
   });
 
-// Types inférés automatiquement
+// Types inférés automatiquement (Entrées)
 export type UserLoginDto = z.infer<typeof UserLoginSchema>;
 export type UserRegisterDto = z.infer<typeof UserRegisterSchema>;
+
+// Réponses (Sorties)
+export const LoginResponseSchema = z.object({
+  access_token: z.string(),
+});
+
+export const RegisterResponseSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+});
+
+// Types inférés (Sorties)
+export type LoginResponseDto = z.infer<typeof LoginResponseSchema>;
+export type RegisterResponseDto = z.infer<typeof RegisterResponseSchema>;

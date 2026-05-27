@@ -1,11 +1,11 @@
 import client from '../../api/client';
 import axios from 'axios';
 import type { AxiosProgressEvent } from 'axios';
-import type { UploadInitDto } from 'shared';
+import type { UploadInitDto, UploadInitResponseDto } from 'shared';
 
 export const uploadApi = {
   initUpload: async (data: UploadInitDto) => {
-    const response = await client.post<{ fileId: string; presignedUrl: string }>(
+    const response = await client.post<UploadInitResponseDto>(
       '/upload/init',
       data
     );

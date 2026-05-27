@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { S3Module } from './s3/s3.module';
 import { UploadModule } from './upload/upload.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UploadModule } from './upload/upload.module';
     AuthModule,
     S3Module,
     UploadModule,
+    FilesModule,
   ],
   providers: [
     {

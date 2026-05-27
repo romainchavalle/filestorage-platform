@@ -26,5 +26,14 @@ export const UploadInitSchema = z.object({
 // Exporter la liste pour réutilisation (ex: filtrage côté front)
 export const UPLOAD_FORBIDDEN_EXTENSIONS = FORBIDDEN_EXTENSIONS;
 
-// Type inféré
+// Type inféré (Entrée)
 export type UploadInitDto = z.infer<typeof UploadInitSchema>;
+
+// Réponse (Sortie)
+export const UploadInitResponseSchema = z.object({
+  fileId: z.string(),
+  presignedUrl: z.string().url(),
+});
+
+// Type inféré (Sortie)
+export type UploadInitResponseDto = z.infer<typeof UploadInitResponseSchema>;
