@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { uploadApi } from './upload.api';
-import { UploadInitDto, UploadInitSchema } from 'shared';
+import { uploadApi } from '../upload.api';
+import { UploadInitSchema } from 'shared';
+import type { UploadInitDto } from 'shared';
 import { z } from 'zod';
 
 type UploadState = 'idle' | 'uploading' | 'success' | 'error';
@@ -52,8 +53,17 @@ export const useUpload = () => {
       if (err instanceof z.ZodError) {
         setError(err.errors[0].message);
       } else {
-        const errorMessage = err.response?.data?.message || err.message || 'Une erreur est survenue lors du téléversement.';
-        setError(errorMessage);
+        let errorMessage = err.response?.data?.message || err.message || 'Une erreur est survenue lors du téléversement.';
+        
+        // Si NestJS a formaté la ZodError en tableau d'objets (ou tableau de strings)
+        if (Array.isArray(errorMessage) && typeof errorMessage[0] === 'object') {
+          errorMessage = errorMessage[0].message || 'Données invalides.';
+        } else if (Array.isArray(errorMessage)) {
+          errorMessage = errorMessage[0];
+        }
+        
+        // Sécurité ultime pour empêcher le crash de React
+        setError(typeof errorMessage === 'string' ? errorMessage : 'Une erreur inattendue est survenue.');
       }
     }
   };

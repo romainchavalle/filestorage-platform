@@ -1,10 +1,11 @@
-import { apiClient } from '@/lib/api-client';
-import axios, { AxiosProgressEvent } from 'axios';
-import { UploadInitDto } from 'shared';
+import client from '../../api/client';
+import axios from 'axios';
+import type { AxiosProgressEvent } from 'axios';
+import type { UploadInitDto } from 'shared';
 
 export const uploadApi = {
   initUpload: async (data: UploadInitDto) => {
-    const response = await apiClient.post<{ fileId: string; presignedUrl: string }>(
+    const response = await client.post<{ fileId: string; presignedUrl: string }>(
       '/upload/init',
       data
     );
@@ -26,7 +27,7 @@ export const uploadApi = {
   },
 
   completeUpload: async (fileId: string) => {
-    const response = await apiClient.patch(`/upload/complete/${fileId}`);
+    const response = await client.patch(`/upload/complete/${fileId}`);
     return response.data;
   },
 };

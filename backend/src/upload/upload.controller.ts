@@ -3,7 +3,8 @@ import { UploadService } from './upload.service';
 import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
-import { UploadInitSchema, UploadInitDto } from 'shared';
+import { UploadInitSchema } from 'shared';
+import type { UploadInitDto } from 'shared';
 
 @Controller('upload')
 export class UploadController {
@@ -11,9 +12,8 @@ export class UploadController {
 
   @Public() // Accessible aux connectés ET anonymes
   @Post('init')
-  @UsePipes(new ZodValidationPipe(UploadInitSchema))
   async init(
-    @Body() dto: UploadInitDto,
+    @Body(new ZodValidationPipe(UploadInitSchema)) dto: UploadInitDto,
     @CurrentUser() userId?: string,
   ) {
     return this.uploadService.initUpload(dto, userId);
