@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
-import { useAuthStore } from '../../features/auth/store/useAuthStore';
+import { useAuthStore } from '../../features/auth/useAuthStore';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -19,14 +19,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
   return (
     <div className="min-h-screen bg-[#FCF9F2] flex">
       {/* Sidebar */}
-      <aside className="w-[280px] bg-gradient-to-b from-[#FFA78D] to-[#E36666] flex flex-col justify-between text-white p-8">
+      <aside className="w-64 bg-gradient-to-b from-[#FFA78D] to-[#E36666] flex flex-col justify-between text-white p-6">
         <div>
           {/* Logo */}
-          <h1 className="text-[32px] font-bold mb-12 tracking-tight">DataShare</h1>
+          <h1 className="text-2xl font-bold mb-8 tracking-tight">DataShare</h1>
 
           {/* Navigation */}
           <nav>
-            <div className="bg-white/30 text-orange-950 font-semibold px-5 py-3 rounded-xl cursor-default shadow-sm backdrop-blur-sm">
+            <div className="bg-white/40 text-[#4A2012] font-medium text-sm px-4 py-2 rounded-lg cursor-default">
               Mes fichiers
             </div>
           </nav>
@@ -41,10 +41,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         {/* Topbar */}
-        <header className="h-24 flex items-center justify-end px-12 gap-8 border-b border-orange-900/5">
+        <header className="h-20 flex items-center justify-end px-10 gap-6">
           <Link
             to="/"
-            className="bg-[#333333] hover:bg-black transition-colors text-white text-[15px] font-medium px-6 py-3 rounded-lg shadow-sm"
+            className="bg-[#333] hover:bg-black transition-colors text-white text-[13px] font-medium px-4 py-2 rounded-md"
           >
             Ajouter des fichiers
           </Link>

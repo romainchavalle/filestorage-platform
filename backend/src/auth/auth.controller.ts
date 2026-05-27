@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { UserLoginSchema, UserRegisterSchema } from 'shared';

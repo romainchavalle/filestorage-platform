@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './features/home/pages/Home';
 import { Login } from './features/auth/pages/Login';
 import { Register } from './features/auth/pages/Register';
-import { Dashboard } from './features/files/pages/Dashboard';
+import { Dashboard } from './features/dashboard/pages/Dashboard';
+import { DashboardLayout } from './components/layout/DashboardLayout';
 import { ProtectedRoute } from './components/routing/ProtectedRoute';
 
 function App() {
@@ -19,7 +20,9 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <DashboardLayout>
+                <Dashboard />
+              </DashboardLayout>
             </ProtectedRoute>
           }
         />
