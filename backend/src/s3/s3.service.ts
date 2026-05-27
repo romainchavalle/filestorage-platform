@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
@@ -30,5 +30,20 @@ export class S3Service {
 
     // L'URL expire dans 5 minutes (300 secondes)
     return getSignedUrl(this.s3Client, command, { expiresIn: 300 });
+  }
+
+  async deleteFile(key: string): Promise<void> {
+    const command = new DeleteObjectCommand({
+      Bucket: this.bucketName,
+      Key: key,
+    });
+    
+    try {
+      await this.s3Client.send(command);
+      this.logger.log(`Fichier S3 supprimé: ${key}`);
+    } catch (error) {
+      this.logger.error(`Erreur lors de la suppression S3 de ${key}`, error);
+      throw error;
+    }
   }
 }

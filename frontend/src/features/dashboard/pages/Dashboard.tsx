@@ -3,7 +3,7 @@ import { useDashboard } from '../hooks/useDashboard';
 import { FileCard } from '../components/FileCard';
 
 export const Dashboard: React.FC = () => {
-  const { files, filter, setFilter, isLoading } = useDashboard();
+  const { files, filter, setFilter, isLoading, handleDeleteFile } = useDashboard();
 
   return (
     <div className="max-w-5xl">
@@ -44,7 +44,7 @@ export const Dashboard: React.FC = () => {
       ) : (
         <div className="flex flex-col gap-4">
           {files.map((file) => (
-            <FileCard key={file.id} file={file} />
+            <FileCard key={file.id} file={file} onDelete={handleDeleteFile} />
           ))}
         </div>
       )}

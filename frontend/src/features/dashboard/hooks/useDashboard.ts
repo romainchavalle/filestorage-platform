@@ -21,10 +21,20 @@ export function useDashboard() {
     return true; // 'all'
   });
 
+  const handleDeleteFile = async (id: string) => {
+    try {
+      await dashboardApi.deleteFile(id);
+      setFiles((prev) => prev.filter((file) => file.id !== id));
+    } catch (error) {
+      console.error('Erreur lors de la suppression', error);
+    }
+  };
+
   return {
     files: filteredFiles,
     filter,
     setFilter,
     isLoading,
+    handleDeleteFile,
   };
 }

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, Film, Music, FileText, File as FileIcon, Lock, Trash2, ArrowRight } from 'lucide-react';
+import { ConfirmModal } from '../../../components/ui/ConfirmModal';
 import type { FileResponseDto } from 'shared';
 
 interface FileCardProps {
@@ -8,6 +9,8 @@ interface FileCardProps {
 }
 
 export const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // 1. Logique d'expiration
   const expiresAt = new Date(file.expires_at);
   const now = new Date();
@@ -37,8 +40,9 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
   };
 
   return (
-    <div
-      className={`flex items-center gap-4 px-5 py-3 rounded-lg border transition-all ${
+    <>
+      <div
+        className={`flex items-center gap-4 px-5 py-3 rounded-lg border transition-all ${
         isExpired
           ? 'bg-[#FCF9F2] border-orange-900/5 opacity-80'
           : 'bg-white border-orange-900/10 hover:shadow-md'
@@ -70,7 +74,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
         ) : (
           <>
             <button
-              onClick={() => onDelete?.(file.id)}
+              onClick={() => setIsModalOpen(true)}
               className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-orange-200 text-orange-500 hover:bg-orange-50 transition-colors text-[13px] font-medium"
             >
               <Trash2 size={15} />
@@ -86,5 +90,16 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
         )}
       </div>
     </div>
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={() => {
+          if (onDelete) onDelete(file.id);
+        }}
+        title="Supprimer le fichier"
+        message={`Êtes-vous sûr de vouloir supprimer définitivement "${file.original_name}" ? Cette action effacera également le fichier de nos serveurs AWS.`}
+      />
+    </>
   );
 };
