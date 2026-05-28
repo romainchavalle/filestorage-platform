@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Image, Film, Music, FileText, File as FileIcon, Lock, Trash2, ArrowRight } from 'lucide-react';
 import { ConfirmModal } from '../../../components/ui/ConfirmModal';
 import type { FileResponseDto } from 'shared';
@@ -80,12 +81,14 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
               <Trash2 size={15} />
               Supprimer
             </button>
-            <button
+            <Link
+              to={`/d/${file.id}`}
+              target="_blank"
               className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-orange-200 text-orange-500 hover:bg-orange-50 transition-colors text-[13px] font-medium"
             >
               Accéder
               <ArrowRight size={15} />
-            </button>
+            </Link>
           </>
         )}
       </div>

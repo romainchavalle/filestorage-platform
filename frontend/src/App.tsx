@@ -5,6 +5,7 @@ import { Register } from './features/auth/pages/Register';
 import { Dashboard } from './features/dashboard/pages/Dashboard';
 import { DashboardLayout } from './components/layout/DashboardLayout';
 import { ProtectedRoute } from './components/routing/ProtectedRoute';
+import { DownloadPage } from './features/download/pages/DownloadPage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/d/:id" element={<DownloadPage />} />
 
         {/* Routes protégées */}
         <Route
