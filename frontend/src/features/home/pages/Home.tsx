@@ -72,7 +72,7 @@ export function Home() {
         )}
 
         {/* ÉCRAN 2 & 3 : La Carte Blanche Centrale (Modale) */}
-        {(selectedFile || state === 'success') && (
+        {(selectedFile || state !== 'idle') && (
           <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
             <h2 className="text-2xl font-bold text-center mb-6">Ajouter un fichier</h2>
 
@@ -112,13 +112,17 @@ export function Home() {
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1">Expiration</label>
                   <select 
-                    className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-200"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-200 cursor-pointer"
                     value={expiresInDays}
                     onChange={(e) => setExpiresInDays(Number(e.target.value))}
                   >
-                    <option value={7}>Une semaine</option>
+                    <option value={7}>7 jours (Une semaine)</option>
+                    <option value={6}>6 jours</option>
+                    <option value={5}>5 jours</option>
+                    <option value={4}>4 jours</option>
                     <option value={3}>3 jours</option>
-                    <option value={1}>24 heures</option>
+                    <option value={2}>2 jours</option>
+                    <option value={1}>1 jour (24 heures)</option>
                   </select>
                 </div>
 

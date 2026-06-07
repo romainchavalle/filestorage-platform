@@ -18,7 +18,7 @@ export const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
   const isExpired = expiresAt < now;
   
   const diffTime = expiresAt.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
   let expireText = '';
   if (isExpired) {
