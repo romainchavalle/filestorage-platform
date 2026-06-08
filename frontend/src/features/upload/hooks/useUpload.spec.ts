@@ -25,7 +25,7 @@ describe('useUpload Hook', () => {
 
   it('gere le flux d upload complet avec succes', async () => {
     vi.mocked(uploadApi.initUpload).mockResolvedValue({ fileId: 'new-id', presignedUrl: 'http://s3' } as any);
-    vi.mocked(uploadApi.uploadToS3).mockImplementation((url, file, onProgress) => {
+    vi.mocked(uploadApi.uploadToS3).mockImplementation((_url, _file, onProgress) => {
       if (onProgress) onProgress({ loaded: 50, total: 100 } as any);
       return Promise.resolve();
     });

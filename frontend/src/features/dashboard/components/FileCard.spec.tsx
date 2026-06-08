@@ -11,6 +11,8 @@ describe('FileCard Component', () => {
     size_bytes: 1000,
     isProtected: false,
     created_at: new Date().toISOString(),
+    status: 'ready',
+    tags: [],
   };
 
   it('affiche correctement "Expire aujourd hui"', () => {

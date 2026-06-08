@@ -25,7 +25,7 @@ describe('upload.api', () => {
     const mockRes = { fileId: '123' };
     vi.mocked(client.post).mockResolvedValue({ data: mockRes });
     
-    const data = { originalName: 'test.png', sizeBytes: 100, expiresInDays: 7, password: '', tags: [] };
+    const data = { originalName: 'test.png', mimeType: 'image/png', sizeBytes: 100, expiresInDays: 7, password: '', tags: [] };
     const result = await uploadApi.initUpload(data);
     
     expect(client.post).toHaveBeenCalledWith('/upload/init', data);

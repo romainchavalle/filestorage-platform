@@ -20,7 +20,7 @@ export const DownloadPage: React.FC = () => {
       .then((info) => {
         setFileInfo(info);
       })
-      .catch((err) => {
+      .catch((_err) => {
         setErrorType('not_found');
       })
       .finally(() => {

@@ -17,7 +17,7 @@ const originalLocation = window.location;
 beforeEach(() => {
   vi.clearAllMocks();
   delete (window as any).location;
-  window.location = { ...originalLocation, href: '' };
+  window.location = { ...originalLocation, href: '' } as any;
 });
 
 describe('DownloadPage Component (Integration)', () => {

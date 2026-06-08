@@ -38,7 +38,9 @@ describe('Dashboard Component (Integration)', () => {
           size_bytes: 1024,
           expires_at: new Date(Date.now() + 86400000 + 3600000).toISOString(), // demain avec buffer
           isProtected: false,
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
+          status: 'ready',
+          tags: []
         },
         {
           id: '2',
@@ -47,7 +49,9 @@ describe('Dashboard Component (Integration)', () => {
           size_bytes: 2048,
           expires_at: new Date(Date.now() - 86400000).toISOString(), // hier (expiré)
           isProtected: true,
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
+          status: 'ready',
+          tags: []
         }
       ],
       filter: 'all',
