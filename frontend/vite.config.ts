@@ -2,12 +2,23 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import istanbul from 'vite-plugin-istanbul';
 
 import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(), 
+    tailwindcss(),
+    // Active l'instrumentation Istanbul uniquement si VITE_COVERAGE=true
+    istanbul({
+      include: 'src/*',
+      exclude: ['node_modules', 'test/', '**/*.spec.ts', '**/*.spec.tsx'],
+      extension: ['.js', '.ts', '.tsx', '.jsx'],
+      requireEnv: true, // requiert VITE_COVERAGE=true
+    }),
+  ],
   resolve: {
     alias: {
       'shared': path.resolve(__dirname, '../shared/src')
