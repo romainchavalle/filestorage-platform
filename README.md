@@ -9,11 +9,16 @@
 ![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-## 📖 Overview
+## 📖 Overview & Business Logic
 
-**FileStorage Platform** is a full-stack monorepo application designed for secure file management. It provides a seamless user experience for uploading, managing, and sharing files, backed by a robust and scalable architecture.
+**FileStorage Platform** is a full-stack web application designed to act as a secure, personal cloud storage solution. 
 
-The project demonstrates advanced software engineering practices, including a strict separation of concerns (Frontend/Backend/Shared), End-to-End testing, and cloud-native integrations.
+From a **functional perspective**, it allows users to:
+- Securely upload and manage personal or professional files.
+- Organize files efficiently.
+- Generate secure, password-protected sharing links for external users.
+
+From a **technical perspective**, it demonstrates advanced software engineering practices, including a strict separation of concerns (Frontend/Backend/Shared), End-to-End testing, and cloud-native integrations.
 
 ## 🏗️ Architecture
 
