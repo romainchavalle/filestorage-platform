@@ -1,112 +1,109 @@
-# 📁 DataShare
+# ☁️ FileStorage Platform
 
-DataShare est une application web sécurisée permettant d'héberger, de gérer et de partager des fichiers avec (ou sans) protection par mot de passe. 
+> A modern, secure, and scalable file sharing and storage platform. 
 
-Ce projet est séparé en deux environnements distincts : un **Backend (API)** robuste et un **Frontend (UI)** moderne.
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
+![AWS S3](https://img.shields.io/badge/AWS_S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
----
+## 📖 Overview
 
-## 🛠️ Stack Technique
+**FileStorage Platform** is a full-stack monorepo application designed for secure file management. It provides a seamless user experience for uploading, managing, and sharing files, backed by a robust and scalable architecture.
 
-- **Frontend** : React, Vite, Zustand, Zod
-- **Backend** : Node.js, NestJS, Prisma ORM, Zod
-- **Base de données** : PostgreSQL
-- **Stockage** : AWS S3 (ou équivalent MinIO local)
+The project demonstrates advanced software engineering practices, including a strict separation of concerns (Frontend/Backend/Shared), End-to-End testing, and cloud-native integrations.
 
----
+## 🏗️ Architecture
 
-## 📋 Prérequis
+This project is built as a **Monorepo** to share types and configurations effortlessly across the stack.
 
-Pour exécuter ce projet sur votre machine locale, vous aurez besoin des outils suivants installés :
+### 🔙 Backend (`/backend`)
+- **Framework:** NestJS 11
+- **Database ORM:** Prisma
+- **Storage:** AWS S3 (via `@aws-sdk/client-s3`)
+- **Security:** JWT Authentication, Passport, Bcrypt
+- **Documentation:** Swagger UI integration
+- **Testing:** Jest & Supertest (E2E & Unit)
 
-- **Node.js** (v20 ou supérieur recommandé)
-- **npm** (v10 ou supérieur)
-- **Docker & Docker Compose** (pour faire tourner la base de données PostgreSQL localement)
-- Un compte **AWS** (S3) ou une instance MinIO locale pour le stockage des fichiers.
+### 🖥️ Frontend (`/frontend`)
+- **Core:** React 19 + Vite + TypeScript
+- **Styling:** Tailwind CSS 4 + Lucide Icons
+- **State Management:** Zustand
+- **Forms & Validation:** React Hook Form + Resolvers
+- **File Upload:** React Dropzone
+- **Testing:** Vitest, React Testing Library, and **Playwright** for E2E testing.
 
----
-
-## ⚙️ Configuration (Variables d'Environnement)
-
-Le projet nécessite des fichiers `.env` pour fonctionner. Copiez les fichiers `.env.example` (s'ils existent) ou créez-les manuellement à la racine des dossiers `backend/` et `frontend/`.
-
-### 1. Configuration du Backend (`backend/.env`)
-```env
-# Base de données PostgreSQL
-DATABASE_URL="postgresql://postgres:password@localhost:5432/datashare?schema=public"
-
-# Sécurité (Générer une chaîne aléatoire longue)
-JWT_SECRET="votre_super_secret_jwt_tres_long_et_complexe"
-
-# Stockage de fichiers (AWS S3)
-AWS_REGION="eu-west-3"
-AWS_ACCESS_KEY_ID="votre_access_key"
-AWS_SECRET_ACCESS_KEY="votre_secret_key"
-AWS_S3_BUCKET_NAME="datashare-bucket"
-```
-
-### 2. Configuration du Frontend (`frontend/.env`)
-```env
-# URL de l'API Backend
-VITE_API_URL="http://localhost:3000"
-```
+### 🤝 Shared (`/shared`)
+- Contains shared DTOs, interfaces, and types to ensure strict End-to-End Type Safety between the client and the server.
 
 ---
 
-## 🚀 Installation & Lancement
+## 🚀 Features
 
-### Étape 1 : Démarrer la Base de Données
-Si vous utilisez Docker, lancez simplement le conteneur PostgreSQL :
+- **Secure Authentication:** JWT-based user authentication.
+- **Cloud Storage:** Direct integration with AWS S3 for reliable file uploads and generation of pre-signed URLs.
+- **Drag & Drop Uploads:** Smooth UI for file uploading utilizing `react-dropzone`.
+- **State-of-the-Art Testing:** Comprehensive test coverage including E2E tests powered by Playwright and Jest.
+- **Modern UI:** Responsive and accessible interface built with Tailwind CSS.
+
+---
+
+## 🛠️ Getting Started
+
+### Prerequisites
+- Node.js (v20+)
+- PostgreSQL (or your preferred DB supported by Prisma)
+- AWS S3 bucket credentials
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/romainchavalle/filestorage-platform.git
+   cd filestorage-platform
+   ```
+
+2. **Install dependencies** (run in both frontend and backend)
+   ```bash
+   cd backend && npm install
+   cd ../frontend && npm install
+   ```
+
+3. **Environment Setup**
+   - Duplicate `.env.example` to `.env` in the backend and configure your Database URL and AWS credentials.
+   
+4. **Database Migration**
+   ```bash
+   cd backend
+   npx prisma migrate dev
+   ```
+
+5. **Start the application**
+   - **Backend:** `npm run start:dev`
+   - **Frontend:** `npm run dev`
+
+---
+
+## 🧪 Testing
+
+The platform enforces high-quality standards through multiple testing layers:
+
 ```bash
-docker-compose up -d
-```
-*(Si vous n'avez pas de `docker-compose.yml`, assurez-vous d'avoir un serveur PostgreSQL local tournant sur le port 5432 avec les identifiants de votre `DATABASE_URL`)*.
+# Backend (Jest)
+npm run test        # Unit tests
+npm run test:e2e    # End-to-End API tests
 
-### Étape 2 : Lancer le Backend (NestJS)
-```bash
-cd backend
-npm install
-
-# Initialiser la base de données avec Prisma
-npx prisma db push
-# (Optionnel) Générer le client Prisma
-npx prisma generate
-
-# Lancer le serveur (tourne sur http://localhost:3000)
-npm run start:dev
-```
-
-### Étape 3 : Lancer le Frontend (React/Vite)
-Dans un nouveau terminal :
-```bash
-cd frontend
-npm install
-
-# Lancer l'interface (tourne généralement sur http://localhost:5173)
-npm run dev
+# Frontend (Vitest & Playwright)
+npm run test        # Unit/Component tests
+npm run test:e2e    # UI End-to-End tests
 ```
 
 ---
 
-## 🧪 Tests et Qualité
-
-Ce projet possède une couverture de test stricte et des stratégies de suivi de performance. Vous pouvez exécuter les tests avec les commandes suivantes :
-
-**Côté Backend (`/backend`) :**
-- `npm run test` : Lance les tests unitaires (Jest).
-- `npm run test:e2e` : Lance les tests d'intégration API (Supertest).
-
-**Côté Frontend (`/frontend`) :**
-- `npm run test` : Lance les tests unitaires et d'intégration (Vitest).
-- `npm run test:e2e` : Lance les scénarios utilisateurs de bout en bout (Playwright).
+## 📄 License
+This project is proprietary and confidential.
 
 ---
-
-## 📚 Documentations Annexes
-
-Pour des détails approfondis sur l'ingénierie du projet, consultez nos documents de spécifications à la racine du dépôt :
-
-- [TESTING.md](./TESTING.md) - Plan de test, critères d'acceptation et stratégies.
-- [SECURITY.md](./SECURITY.md) - Scan de vulnérabilité et architecture de sécurité.
-- [PERF.md](./PERF.md) - Rapports de stress test et budget de performances.
-- [MAINTENANCE.md](./MAINTENANCE.md) - Procédures de mise à jour des dépendances.
+*Built with ❤️ by Romain Chavalle.*
